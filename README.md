@@ -7,9 +7,21 @@
 
 ---
 
+## Visão Geral
+
+Arquitetura de e-commerce baseada em IaaS no Azure, com alta disponibilidade usando Load Balancer e Availability Set.
+
+Este projeto demonstra:
+- Provisionamento manual de infraestrutura
+- Configuração de rede segura (NSG)
+- Balanceamento de carga em VMs Linux
+- Deploy de aplicação Flask com Nginx
+
+---
+
 ## Sobre o Projeto
 
-O projeto está sendo desenvolvido como parte dos meus estudos em cloud computing e também para colocar em prática conhecimentos obtidos através dos estudos para a certificação AZ-900. Foco em aplicação de conceitos de Infraestrutura como Service (IaaS), alta disponibilidade e organização de recursos em ambiente cloud, não contemplando inicialmente aspectos avançados de frontend ou experiência do usuário.
+O projeto está sendo desenvolvido como parte dos meus estudos em cloud computing e também para colocar em prática conhecimentos obtidos através dos estudos para a certificação AZ-900. Foco na aplicação de conceitos de Infrastructure as a Service (IaaS), alta disponibilidade e organização de recursos em ambiente cloud, não contemplando inicialmente aspectos avançados de frontend ou experiência do usuário.
 
 ### Objetivos (planejamento)
 
@@ -37,7 +49,7 @@ Diagrama da infraestrutura planejada:
 | Load Balancing | Azure Load Balancer (Basic SKU) | Distribuir tráfego HTTP/HTTPS
 | Computação | 2x VMs Ubuntu B2ts_v2 + Availability Set | Hospedagem da aplicação
 | Aplicação | Nginx + Python/Flask | Reverse proxy + API REST
-| Database | PostgreSQL 14 | Armazenamento persistente
+| Database | PostgreSQL 14 (instalado na VM) | Armazenamento persistente
 | Rede | VNet + Subnet + NSG | Isolamento e segurança
 | Monitoramento | Azure Monitor + Alertas | Observabilidade
 
@@ -55,6 +67,7 @@ Diagrama da infraestrutura planejada:
 - Monitoramento: Azure Monitor
 
 ---
+
 ## Processo de Implementação
 
 ### Fases
@@ -85,9 +98,12 @@ az-iaas-ecommerce/
 
 ---
 
-## Como executar
+## Como executar (fase atual)
 
-Espaço que irei preencher após a implementação.
+1. Criar Resource Group
+2. Criar VNet e Subnet
+3. Configurar NSG com regras de entrada
+4. Associar NSG à Subnet
 
 ---
 
@@ -102,19 +118,32 @@ Espaço que irei preencher após a implementação.
 
 ## Decisões de Arquitetura
 
-Espaço que irei preencher durante a implementação.
+- Uso de quatro tags para organizar os recursos e controlar custos desse projeto (Projeto, Ambiente, Owner e CC)
+- Grupo de Recursos e Recursos foram criados na região Central US porque era a única região que minha assinatura tinha quota para VMs mais baratas
+- A implementar: método de segurança para restringir o acesso via SSH
+
+---
+
+## Resultados Reais (Fase 1)
+
+- Rede virtual configurada com isolamento
+- NSG aplicado com regras de entrada restritivas
+- Estrutura inicial de recursos criada
 
 ---
 
 ## Aprendizados
 
-Espaço que irei preencher durante a implementação.
+- Criação de Grupo de Recursos para organização
+- Criação e configuração de VNet e Subnet para futura comunicação entre recursos
+- Configuração de regras de entrada do NSG para restringir acesso aos recursos da rede
+- Criação de IP públicos
 
 ---
 
 ## Desafios
 
-Espaço que irei preencher durante a implementação.
+- Verificar antecipadamente em qual região o projeto seria implementado para otimizar os custos, já que a região escolhida é baseada nas quotas disponíveis para tamanhos de VM com menor custo na assinatura
 
 ---
 
@@ -135,6 +164,6 @@ Bruno Kraker
 
 ## Status do Projeto
 
-- Fase atual: Planejamento
-- Próximo passo: Fase 1 - Fundação (Rede + NSG)
-- Última atualização: 23/04/2026
+- Fase atual: Desenvolvimento
+- Próximo passo: Fase 2 - Load Balancer
+- Última atualização: 24/04/2026
