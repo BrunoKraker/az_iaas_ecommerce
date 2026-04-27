@@ -46,7 +46,7 @@ Diagrama da infraestrutura planejada:
 
 | Camada | Componente | Função | 
 | ------ | ---------- | ------ |
-| Load Balancing | Azure Load Balancer (Basic SKU) | Distribuir tráfego HTTP/HTTPS
+| Load Balancing | Azure Load Balancer (Standard SKU) | Distribuir tráfego HTTP
 | Computação | 2x VMs Ubuntu B2ts_v2 + Availability Set | Hospedagem da aplicação
 | Aplicação | Nginx + Python/Flask | Reverse proxy + API REST
 | Database | PostgreSQL 14 (instalado na VM) | Armazenamento persistente
@@ -98,12 +98,19 @@ az-iaas-ecommerce/
 
 ---
 
-## Como executar (fase atual)
+## Passos Realizados (fase atual)
 
+**Fase 1 - Fundação**
 1. Criar Resource Group
 2. Criar VNet e Subnet
 3. Configurar NSG com regras de entrada
 4. Associar NSG à Subnet
+
+**Fase 2 - Load Balancer**
+1. Criar Load Balancer Standard SKU
+2. Configurar IP Frontend (associar ao IP Público do load balancer criado)
+3. Criar pool do backend (vazio por enquanto)
+4. Configurar Health Probe (HTTP GET / 15s, limite 2) e Regra de Balanceamento (frontend --> backend - TCP/80)
 
 ---
 
@@ -116,34 +123,51 @@ az-iaas-ecommerce/
 
 ---
 
+## Resultados Reais (Fase atual)
+
+- Rede virtual configurada com isolamento
+- NSG aplicado com regras de entrada restritivas
+- Estrutura inicial de recursos criada
+- Load Balancer criado e configurado
+- Regras de Balanceamento criadas e prontas para uso
+
+---
+
 ## Decisões de Arquitetura
 
 - Uso de quatro tags para organizar os recursos e controlar custos desse projeto (Projeto, Ambiente, Owner e CC)
 - Grupo de Recursos e Recursos foram criados na região Central US porque era a única região que minha assinatura tinha quota para VMs mais baratas
 - A implementar: método de segurança para restringir o acesso via SSH
-
----
-
-## Resultados Reais (Fase 1)
-
-- Rede virtual configurada com isolamento
-- NSG aplicado com regras de entrada restritivas
-- Estrutura inicial de recursos criada
+- Configuração de Health Probe (HTTP GET / 15s, limite 2) para verificar integridade das VMs durante a atividade
 
 ---
 
 ## Aprendizados
 
-- Criação de Grupo de Recursos para organização
+**Fase 1 - Fundação**
+- Criação de Grupo de Recursos com tags para organização
 - Criação e configuração de VNet e Subnet para futura comunicação entre recursos
 - Configuração de regras de entrada do NSG para restringir acesso aos recursos da rede
-- Criação de IP públicos
+- Criação de IP público
+- Importância de planejar a região a ser utilizada baseado em quotas
+
+**Fase 2 - Load Balancer**
+- Criação e configuração de Load Balancer
+- Saber que pool de backend pode ficar vazio inicialmente
+- Health Probe é necessário para failover (2 testes sem resposta --> VM sem saúde)
+- Regra LB: frontend --> backend (porta 80 --> 80)
 
 ---
 
 ## Desafios
 
-- Verificar antecipadamente em qual região o projeto seria implementado para otimizar os custos, já que a região escolhida é baseada nas quotas disponíveis para tamanhos de VM com menor custo na assinatura
+**Fase 1 - Fundação**
+- Verificar antecipadamente em qual região o projeto seria implementado para otimizar os custos, já que a região escolhida é baseada nas quotas disponíveis para tamanhos de VM com menor custo na assinatura (Família B2ts_v2 disponível, infelizmente a B1s não)
+- Entender prioridade do NSG
+
+**Fase 2 - Load Balancer**
+- Entender que o uso do pool de backend
+- Entender a diferença entre Health Probe e a Regra de Balanceamento
 
 ---
 
@@ -165,5 +189,5 @@ Bruno Kraker
 ## Status do Projeto
 
 - Fase atual: Desenvolvimento
-- Próximo passo: Fase 2 - Load Balancer
-- Última atualização: 24/04/2026
+- Próximo passo: Fase 3 - VMs
+- Última atualização: 26/04/2026
