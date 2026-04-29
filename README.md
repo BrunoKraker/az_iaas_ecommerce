@@ -7,6 +7,16 @@
 
 ---
 
+## Resumo
+
+- 2 VMs Linux em Availability Set
+- Load Balancer distribuindo tráfego HTTP
+- Backend Flask com Nginx
+- PostgreSQL 14 rodando em VM (modelo IaaS, sem uso de PaaS)
+- Monitoramento com Azure Monitor
+
+---
+
 ## Visão Geral
 
 Arquitetura de e-commerce baseada em IaaS no Azure, com alta disponibilidade usando Load Balancer e Availability Set.
@@ -49,7 +59,7 @@ Diagrama da infraestrutura planejada:
 | Load Balancing | Azure Load Balancer (Standard SKU) | Distribuir tráfego HTTP
 | Computação | 2x VMs Ubuntu B2ts_v2 + Availability Set | Hospedagem da aplicação
 | Aplicação | Nginx + Python/Flask | Reverse proxy + API REST
-| Database | PostgreSQL 14 (instalado na VM) | Armazenamento persistente
+| Database | PostgreSQL 14 rodando em VM | Armazenamento persistente
 | Rede | VNet + Subnet + NSG | Isolamento e segurança
 | Monitoramento | Azure Monitor + Alertas | Observabilidade
 
@@ -58,7 +68,7 @@ Diagrama da infraestrutura planejada:
 ## Tecnologias a serem utilizadas
 
 - Cloud: Microsoft Azure (IaaS)
-- SO: Ubuntu Server 22.04 LTS
+- SO: Ubuntu Server 24.04 LTS
 - Web Server: Nginx 1.18+
 - Runtime: Python 3.11
 - Framework: Flask
@@ -98,7 +108,7 @@ az-iaas-ecommerce/
 
 ---
 
-## Passos Realizados (fase atual)
+## Passos Realizados (Fase atual)
 
 **Fase 1 - Fundação**
 1. Criar Resource Group
@@ -112,6 +122,13 @@ az-iaas-ecommerce/
 3. Criar pool do backend (vazio por enquanto)
 4. Configurar Health Probe (HTTP GET / 15s, limite 2) e Regra de Balanceamento (frontend --> backend - TCP/80)
 
+**Fase 3 - VMs**
+1. Provisionar e configurar VM1
+2. Provisionar e configurar VM2
+3. Criar IPs públicos temporários para as VMs
+4. Testar acesso às VMs via SSH
+5. Verificar se as VMs estão associadas ao pool de backend e ao availability set
+
 ---
 
 ## Resultados Esperados
@@ -120,6 +137,7 @@ az-iaas-ecommerce/
 - Balanceamento de carga funcional
 - Monitoramento ativo com alertas
 - Arquitetura funcional, documentada e otimizada
+- Acesso SSH restrito
 
 ---
 
@@ -130,6 +148,9 @@ az-iaas-ecommerce/
 - Estrutura inicial de recursos criada
 - Load Balancer criado e configurado
 - Regras de Balanceamento criadas e prontas para uso
+- Availability Set criado e configurado (2 FD e 5 UD) para atingir alta disponibilidade
+- VMs provisionadas e configuradas na rede
+- SLA de 99.95% alcançado através da distribuição das 2 VMs no conjunto de disponibilidade
 
 ---
 
@@ -137,8 +158,9 @@ az-iaas-ecommerce/
 
 - Uso de quatro tags para organizar os recursos e controlar custos desse projeto (Projeto, Ambiente, Owner e CC)
 - Grupo de Recursos e Recursos foram criados na região Central US porque era a única região que minha assinatura tinha quota para VMs mais baratas
-- A implementar: método de segurança para restringir o acesso via SSH
+- A ser implementado: método de segurança para restringir o acesso via SSH (melhorar o controle de acesso mínimo)
 - Configuração de Health Probe (HTTP GET / 15s, limite 2) para verificar integridade das VMs durante a atividade
+- Uso de IPs públicos temporários para as VMs para possibilitar conexão e configuração antes do resultado final
 
 ---
 
@@ -153,9 +175,17 @@ az-iaas-ecommerce/
 
 **Fase 2 - Load Balancer**
 - Criação e configuração de Load Balancer
-- Saber que pool de backend pode ficar vazio inicialmente
+- Entendimento de que o pool de backend pode ser inicialmente provisionado vazio
 - Health Probe é necessário para failover (2 testes sem resposta --> VM sem saúde)
-- Regra LB: frontend --> backend (porta 80 --> 80)
+- Regra LB: frontend (porta 80) --> backend (porta 80)
+
+**Fase 3 - VMS**
+- Criação e configuração de Conjunto de Disponibilidade com 2 domínios de falha e 5 domínios de atualização
+- Criação e configuração de VMs
+- Conexão via SSH a um servidor
+- Configuração de permissões de usuários para leitura de arquivos .pem (chaves SSH)
+- Comandos básicos do Powershell e do Linux
+- Auto-shutdown para as VMs evitando gastos desnecessários
 
 ---
 
@@ -169,11 +199,15 @@ az-iaas-ecommerce/
 - Entender que o uso do pool de backend
 - Entender a diferença entre Health Probe e a Regra de Balanceamento
 
+**Fase 3 - VMs**
+- Entender os requisitos e o funcionamento de uma conexão SSH
+- Entender como funciona as permissões para usuários no Windows e no Linux
+
 ---
 
 ## Sugestões de Melhoria
 
-Espaço que irei preencher durante a implementação.
+- Automatizar a criação de VMs (idênticas) através de IaC
 
 ---
 
@@ -189,5 +223,5 @@ Bruno Kraker
 ## Status do Projeto
 
 - Fase atual: Desenvolvimento
-- Próximo passo: Fase 3 - VMs
-- Última atualização: 26/04/2026
+- Próximo passo: Fase 4 - Stack Completa
+- Última atualização: 28/04/2026

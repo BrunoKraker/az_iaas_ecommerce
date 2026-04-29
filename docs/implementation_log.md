@@ -10,7 +10,7 @@ Registro cronológico de todas as etapas do projeto.
 
 - Repositório no GitHub criado
 - Estrutura de pastas definida
-- README inical criado
+- README inicial criado
 - Diagrama de arquitetura inicial criado
 
 ### Próximo Passo
@@ -44,7 +44,7 @@ Registro cronológico de todas as etapas do projeto.
 ### Ações
 
 - Load Balancer criado no Central US (lb-ecommerce)
-- Configuração do IP do Frontend (associado ao pip-loadbalancer)
+- Configuração do IP público do Load Balancer (frontend - associado ao pip-loadbalancer)
 - Criação de pool do backend (backend-vms vazio por enquanto, ou seja, sem VMs)
 - Configuração de Health Probe a cada 15 seg (http-probe - HTTP GET / a cada 15s, limite 2)
 - Configuração de Regra de Balanceamento (http-rule - TCP/80 frontend --> backend)
@@ -57,3 +57,30 @@ Registro cronológico de todas as etapas do projeto.
 ### Próximo Passo
 
 - Fase 3
+
+---
+
+## [28/04/2026] - Fase 3: VMs
+
+### Ações
+
+- Criação e configuração de conjunto de disponilidade com 2 domínios de falha e 5 domínios de atualização
+- Provisionamento e configuração de 2 VMs no Central US
+- Uso de VMs baratas para otimizar custo
+- Associação das VMs com o availability set, VNet e Subnet
+- Verificação do pool de backend e das VMs no conjunto de disponibilidade
+- Criação de IPs públicos temporários
+- Teste de conexão com as VMs via SSH (par de chaves)
+- Aprendizado de comandos do powershell e do linux
+
+### Notas
+
+- Demorei bastante para entender o permissionamento que envolve os arquivos .pem (chaves SSH)
+- Aprendi a configurar o permissionamento
+- Possível problema com as regras outbound do NSG
+- Testes ping google.com não funcionaram nas VMs
+- Devo lembrar de apagar os IPs públicos temporários depois
+
+### Próximo Passo
+
+- Fase 4
