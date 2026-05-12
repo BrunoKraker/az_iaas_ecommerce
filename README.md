@@ -12,7 +12,7 @@
 - 2 VMs Linux em Availability Set
 - Load Balancer distribuindo tráfego HTTP
 - Backend Flask com Nginx
-- PostgreSQL 14 rodando em VM (modelo IaaS, sem uso de PaaS)
+- PostgreSQL 16 rodando em VM (modelo IaaS, sem uso de PaaS)
 - Monitoramento com Azure Monitor
 
 ---
@@ -59,7 +59,7 @@ Diagrama da infraestrutura planejada:
 | Load Balancing | Azure Load Balancer (Standard SKU) | Distribuir tráfego HTTP
 | Computação | 2x VMs Ubuntu B2ts_v2 + Availability Set | Hospedagem da aplicação
 | Aplicação | Nginx + Python/Flask | Reverse proxy + API REST
-| Database | PostgreSQL 14 rodando em VM | Armazenamento persistente
+| Database | PostgreSQL 16 rodando em VM | Armazenamento persistente
 | Rede | VNet + Subnet + NSG | Isolamento e segurança
 | Monitoramento | Azure Monitor + Alertas | Observabilidade
 
@@ -129,6 +129,13 @@ az-iaas-ecommerce/
 4. Testar acesso às VMs via SSH
 5. Verificar se as VMs estão associadas ao pool de backend e ao availability set
 
+**Fase 4 - Stack**
+1. Configuração do serviço Nginx nas duas VMs
+2. Configuração do serviço da API nas duas VMs (VM2 sem conexão com o banco)
+3. Configuração do banco de dados (PostgreSQL) na VM1
+4. Criação de .env e .gitignore no diretório do projeto
+5. Criação de .env.example para mostrar um exemplo de .env para o leitor
+
 ---
 
 ## Resultados Esperados
@@ -151,6 +158,7 @@ az-iaas-ecommerce/
 - Availability Set criado e configurado (2 FD e 5 UD) para atingir alta disponibilidade
 - VMs provisionadas e configuradas na rede
 - SLA de 99.95% alcançado através da distribuição das 2 VMs no conjunto de disponibilidade
+- VM1 operando perto do esperado (serviço nginx, gunicorn e postgresql)
 
 ---
 
@@ -161,6 +169,7 @@ az-iaas-ecommerce/
 - A ser implementado: método de segurança para restringir o acesso via SSH (melhorar o controle de acesso mínimo)
 - Configuração de Health Probe (HTTP GET / 15s, limite 2) para verificar integridade das VMs durante a atividade
 - Uso de IPs públicos temporários para as VMs para possibilitar conexão e configuração antes do resultado final
+- VM2 não terá o postgresql, apenas irá conectar no banco da VM1
 
 ---
 
@@ -187,6 +196,13 @@ az-iaas-ecommerce/
 - Comandos básicos do Powershell e do Linux
 - Auto-shutdown para as VMs evitando gastos desnecessários
 
+**Fase 4 - Stack**
+1. Configuração do serviço Nginx com backup e alteração da configuração padrão do Nginx (reverse proxy)
+2. Configuração do serviço da API para rodar sem precisar de app.run()
+3. Criação e configuração do Database básico do ecommerce
+4. Criação dos arquivos .env e .gitignore para ocultar as variáveis de ambiente
+5. Aprendizado de comandos bash para criação e verificação de serviços
+
 ---
 
 ## Desafios
@@ -203,11 +219,17 @@ az-iaas-ecommerce/
 - Entender os requisitos e o funcionamento de uma conexão SSH
 - Entender como funciona as permissões para usuários no Windows e no Linux
 
+**Fase 4 - Stack**
+- Troubleshooting da VM1, pois ela ficou inoperante por um tempo (sobrecarregada)
+- Adentrar mais no uso dos comandos do terminal para conversar com o sistema
+- Entender mais sobre a conexão na fase atual e o que seria possível testar
+
 ---
 
 ## Sugestões de Melhoria
 
 - Automatizar a criação de VMs (idênticas) através de IaC
+- Automatizar a configuração dos serviços das VMs, pois foram criados repetidamente na VM1 e VM2
 
 ---
 
@@ -223,5 +245,5 @@ Bruno Kraker
 ## Status do Projeto
 
 - Fase atual: Desenvolvimento
-- Próximo passo: Fase 4 - Stack Completa
-- Última atualização: 28/04/2026
+- Próximo passo: Fase 5 - Database
+- Última atualização: 11/05/2026

@@ -81,6 +81,32 @@ Registro cronológico de todas as etapas do projeto.
 - Testes ping google.com não funcionaram nas VMs
 - Devo lembrar de apagar os IPs públicos temporários depois
 
+---
+
+## [11/05/2026] - Fase 4: Stack Completa
+
+### Ações
+
+- Atualização de pacotes das VMs
+- Instalação e configuração do Nginx nas duas VMs
+- Instalação de pip e venv nas duas VMs
+- Criação do diretório ~/ecommerce-api
+- Criação de ambiente virtual nesse diretório para rodar a API
+- Instalação e configuração do PostgreSQL 16
+- Criação do database e atribuição de permissões
+- Criação, população e consulta do schema criado
+- Criação de .env para guardar as credenciais do banco
+- Criação da API app.py
+- Criação do serviço Nginx depois de alterar as configurações padrões para se tornar um reverse proxy
+- Criação do serviço do gunicorn para rodar a API sem o app.run() manualmente
+- Replicação de tudo (sem a parte do database) na VM2
+
+### Notas
+
+- Demorei para entender sobre as limitações atuais de conexão
+- Demorei para solucionar o problema com a VM1 inoperante por um tempo (sobrecarregada de serviços)
+- Automatizar o processo de configuração das duas VMs (um script talvez resolveria)
+
 ### Próximo Passo
 
-- Fase 4
+- Fase 5
