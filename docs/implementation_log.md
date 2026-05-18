@@ -81,6 +81,10 @@ Registro cronológico de todas as etapas do projeto.
 - Testes ping google.com não funcionaram nas VMs
 - Devo lembrar de apagar os IPs públicos temporários depois
 
+### Próximo Passo
+
+- Fase 4
+
 ---
 
 ## [11/05/2026] - Fase 4: Stack Completa
@@ -110,3 +114,27 @@ Registro cronológico de todas as etapas do projeto.
 ### Próximo Passo
 
 - Fase 5
+
+---
+
+## [17/05/2026] - Fase 5: Database
+
+### Ações
+
+- Criei .env na VM2 com as informações de acesso remoto
+- Habilitei conexão remota na VM1
+- Criei regra de entrada no NSG para habilitar conexão entre as VMs (database)
+- Conferi todos os serviços rodando
+- Peguei os arquivos de configuração para colocar no repositório
+- Naveguei pelo postgre para refazer o arquivo que gerou meu database
+- Exclui os dois IPs temporários das VMs
+
+### Notas
+
+- Medo de excluir os IPs temporários e precisar de alguma coisa dentro da VM posteriormente
+- Demora para entender que a VM2 não precisava ter o postgre, apenas a conexão através da API
+- Demora para entender o motivo das VMs não estarem comunicando mesmo liberando o acesso remoto na VM1 (falta de regra no NSG)
+
+### Próximo Passo
+
+- Fase 6

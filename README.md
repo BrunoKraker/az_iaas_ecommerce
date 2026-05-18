@@ -1,6 +1,6 @@
 # Azure IaaS E-commerce
 
-> Projeto: E-commerce multi-camadas com arquitetura IaaS no Azure
+> Projeto: Simulação de e-commerce com arquitetura IaaS no Azure
 
 ![Azure](https://img.shields.io/badge/Azure-IaaS-blue)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
@@ -19,7 +19,7 @@
 
 ## Visão Geral
 
-Arquitetura de e-commerce baseada em IaaS no Azure, com alta disponibilidade usando Load Balancer e Availability Set.
+Arquitetura de e-commerce baseada em IaaS no Azure, simulando alta disponibilidade usando Load Balancer e Availability Set.
 
 Este projeto demonstra:
 - Provisionamento manual de infraestrutura
@@ -48,7 +48,7 @@ O projeto está sendo desenvolvido como parte dos meus estudos em cloud computin
 
 Diagrama da infraestrutura planejada:
 
-![diagrama](diagrams/arquitetura.png)
+![diagrama](diagrams/architecture-overview.png)
 
 ---
 
@@ -72,7 +72,7 @@ Diagrama da infraestrutura planejada:
 - Web Server: Nginx 1.18+
 - Runtime: Python 3.11
 - Framework: Flask
-- Database: PostgreSQL 14
+- Database: PostgreSQL 16
 - Orquestração: Systemd
 - Monitoramento: Azure Monitor
 
@@ -90,6 +90,7 @@ Diagrama da infraestrutura planejada:
 | 4 | Stack (Nginx + Python + PostgreSQL) |
 | 5 | Database |
 | 6 | Monitoramento |
+| 7 | Testes | 
 
 ---
 
@@ -98,6 +99,7 @@ Diagrama da infraestrutura planejada:
 ```
 az-iaas-ecommerce/
 ├── README.md                 # Este arquivo
+├── .gitignore                # Ignora arquivos sensíveis
 ├── docs/                     # Documentação detalhada
 ├── diagrams/                 # Diagramas de arquitetura
 ├── screenshots/              # Evidências da implementação
@@ -119,7 +121,7 @@ az-iaas-ecommerce/
 **Fase 2 - Load Balancer**
 1. Criar Load Balancer Standard SKU
 2. Configurar IP Frontend (associar ao IP Público do load balancer criado)
-3. Criar pool do backend (vazio por enquanto)
+3. Criar pool do backend
 4. Configurar Health Probe (HTTP GET / 15s, limite 2) e Regra de Balanceamento (frontend --> backend - TCP/80)
 
 **Fase 3 - VMs**
@@ -131,20 +133,28 @@ az-iaas-ecommerce/
 
 **Fase 4 - Stack**
 1. Configuração do serviço Nginx nas duas VMs
-2. Configuração do serviço da API nas duas VMs (VM2 sem conexão com o banco)
+2. Configuração do serviço da API nas duas VMs
 3. Configuração do banco de dados (PostgreSQL) na VM1
 4. Criação de .env e .gitignore no diretório do projeto
 5. Criação de .env.example para mostrar um exemplo de .env para o leitor
+
+**Fase 5 - Database**
+1. Configuração da conexão da API na VM2 com o database da VM1
+2. Configuração do PostgreSQL na VM1 para permitir acesso remoto
+3. Criação de regra de entrada no NSG para permitir a conexão entre as VMs (database)
+4. Exclusão dos IPs temporários das VMs
+5. Inclusão dos arquivos utilizados nas VMs na estrutura do repositório
 
 ---
 
 ## Resultados Esperados
 
-- Aplicação altamente disponível
+- Aplicação altamente disponível (simulação)
 - Balanceamento de carga funcional
 - Monitoramento ativo com alertas
 - Arquitetura funcional, documentada e otimizada
 - Acesso SSH restrito
+- Regras de segurança mais restritas possível
 
 ---
 
@@ -158,18 +168,21 @@ az-iaas-ecommerce/
 - Availability Set criado e configurado (2 FD e 5 UD) para atingir alta disponibilidade
 - VMs provisionadas e configuradas na rede
 - SLA de 99.95% alcançado através da distribuição das 2 VMs no conjunto de disponibilidade
-- VM1 operando perto do esperado (serviço nginx, gunicorn e postgresql)
+- VMs configuradas e funcionando conforme o esperado
 
 ---
 
 ## Decisões de Arquitetura
 
+- Apesar de não ser o ideal, utilizei duas VMs e um database dentro de uma dessas VMs devido ao custo do projeto
+- Essa decisão impacta minha alta disponilidade, pois a VM1 é ponto de falha (se ela cair, tudo cai)
+- Para um projeto futuro, espero ter orçamento para poder implantar um scale set, usando master/slaves para o database e implantar cache na minha aplicação
 - Uso de quatro tags para organizar os recursos e controlar custos desse projeto (Projeto, Ambiente, Owner e CC)
 - Grupo de Recursos e Recursos foram criados na região Central US porque era a única região que minha assinatura tinha quota para VMs mais baratas
 - A ser implementado: método de segurança para restringir o acesso via SSH (melhorar o controle de acesso mínimo)
 - Configuração de Health Probe (HTTP GET / 15s, limite 2) para verificar integridade das VMs durante a atividade
 - Uso de IPs públicos temporários para as VMs para possibilitar conexão e configuração antes do resultado final
-- VM2 não terá o postgresql, apenas irá conectar no banco da VM1
+- VM2 não terá o postgresql instalado, pois apenas conectará no database da VM1 através da API
 
 ---
 
@@ -203,6 +216,11 @@ az-iaas-ecommerce/
 4. Criação dos arquivos .env e .gitignore para ocultar as variáveis de ambiente
 5. Aprendizado de comandos bash para criação e verificação de serviços
 
+**Fase 5 - Database**
+1. Configuração do PostgreSQL para habilitar conexões remotas
+2. Configuração de regra de segurança dentro da própria subnet
+3. Comandos bash e familiaridade com o PostgreSQL via terminal
+
 ---
 
 ## Desafios
@@ -224,10 +242,15 @@ az-iaas-ecommerce/
 - Adentrar mais no uso dos comandos do terminal para conversar com o sistema
 - Entender mais sobre a conexão na fase atual e o que seria possível testar
 
+**Fase 5 - Database**
+- Descobrir o motivo da VM2 não conectar na VM1 de primeira (regra do NSG)
+- Navegar pelo PostgreSQL para conseguir refazer o script que criou e populou o database
+
 ---
 
 ## Sugestões de Melhoria
 
+- Melhoria na arquitetura (simples, apenas para teste)
 - Automatizar a criação de VMs (idênticas) através de IaC
 - Automatizar a configuração dos serviços das VMs, pois foram criados repetidamente na VM1 e VM2
 
@@ -245,5 +268,5 @@ Bruno Kraker
 ## Status do Projeto
 
 - Fase atual: Desenvolvimento
-- Próximo passo: Fase 5 - Database
-- Última atualização: 11/05/2026
+- Próximo passo: Fase 6 - Monitoramento
+- Última atualização: 17/05/2026

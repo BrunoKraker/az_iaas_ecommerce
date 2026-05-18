@@ -1,0 +1,18 @@
+[Unit]
+Description=Gunicorn instance para meu app Flask
+After=network.target
+
+[Service]
+User=azureuser
+Group=azureuser
+WorkingDirectory=/home/azureuser/ecommerce-api
+Environment="PATH=/home/azureuser/ecommerce-api/venv/bin"
+
+ExecStart=/home/azureuser/ecommerce-api/venv/bin/gunicorn --workers 4 --bind 0.0.0.0:3000 app:app
+
+Restart=always
+RestartSec=5
+TimeoutStartSec=30
+
+[Install]
+WantedBy=multi-user.target

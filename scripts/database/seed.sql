@@ -1,0 +1,18 @@
+INSERT INTO produtos (nome, preco, estoque) VALUES
+('Notebook Dell Inspiron', 3500.00, 10),
+('Mouse Logitech MX Master', 450.00, 50),
+('Teclado Mecânico Keychron', 650.00, 25),
+('Monitor LG 24 Polegadas', 890.00, 15),
+('Webcam HD Logitech C920', 299.90, 30),
+('iPhone 14 128GB', 4999.90, 8),
+('Samsung Galaxy S23', 3899.00, 12),
+('MacBook Air M2', 8999.90, 5),
+('Headset HyperX Cloud II', 399.90, 20),
+('Cadeira Gamer ThunderX3', 1299.00, 100),
+('SSD Kingston 1TB NVMe', 499.90, 25),
+('Memória RAM Corsair 16GB', 329.90, 18),
+('Placa de Vídeo RTX 4060', 2499.90, 4),
+('Processador Ryzen 7 5800X', 1599.00, 9),
+('Fonte Corsair 750W', 649.90, 10),
+('Mousepad Gamer XL', 89.90, 40),
+...

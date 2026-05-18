@@ -1,2 +1,5 @@
 #ignorar variáveis de ambiente
 .env
+.env.local
+.env.production
+.env.*.local
